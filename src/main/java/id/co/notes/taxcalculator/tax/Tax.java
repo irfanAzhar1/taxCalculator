@@ -3,11 +3,12 @@ package id.co.notes.taxcalculator.tax;
 import java.util.List;
 import id.co.notes.taxcalculator.enums.IncomeType;
 import id.co.notes.taxcalculator.model.IncomeComponent;
+import id.co.notes.taxcalculator.model.TaxLayer;
 
 public abstract class Tax {
-  private List<IncomeComponent> incomeComponents;
-  private boolean isMarried;
-  private int children;
+  final private List<IncomeComponent> incomeComponents;
+  final private boolean isMarried;
+  final private int children;
 
   public Tax(List<IncomeComponent> incomeComponents, boolean isMarried, int children) {
     this.incomeComponents = incomeComponents;
@@ -15,12 +16,6 @@ public abstract class Tax {
     this.children = children;
   }
 
-  public Tax() {
-  }
-
-  public List<IncomeComponent> getIncomeComponents() {
-    return incomeComponents;
-  }
 
   public boolean isMarried() {
     return isMarried;
@@ -28,18 +23,6 @@ public abstract class Tax {
 
   public int getChildren() {
     return children;
-  }
-
-  public void setIncomeComponents(List<IncomeComponent> incomeComponents) {
-    this.incomeComponents = incomeComponents;
-  }
-
-  public void setMarried(boolean married) {
-    isMarried = married;
-  }
-
-  public void setChildren(int children) {
-    this.children = children;
   }
 
   public int getTotalEarning() {
@@ -60,10 +43,31 @@ public abstract class Tax {
     return (int) Math.round(taxable * percentage);
   }
 
-  
-  public abstract int calculateTax();
+
+  public abstract int calculateCountryTax();
   public abstract int getPTKP();
   public abstract int getTaxableIncome();
+
+  public int calculateTax(List<TaxLayer> taxLayers) {
+    int taxableIncome = getTaxableIncome();
+    int countTax = 0;
+
+    if (taxableIncome <= 0) {
+      return 0;
+    }
+
+    for (TaxLayer layer : taxLayers) {
+      if (taxableIncome <= layer.getMaxIncome() - layer.getMinIncome()) {
+        countTax += calculateLayer(taxableIncome, layer.getTaxRate());
+        return countTax;
+      }
+
+      countTax += calculateLayer(layer.getMaxIncome(), layer.getTaxRate());
+      taxableIncome -= layer.getMaxIncome();
+    }
+
+    return countTax;
+  }
 
 }
 

@@ -1,45 +1,25 @@
 package id.co.notes.taxcalculator.tax;
 
 import id.co.notes.taxcalculator.model.IncomeComponent;
+import id.co.notes.taxcalculator.model.TaxLayer;
 
 import java.util.List;
 
 public class IndonesiaTax extends Tax {
+
+    final private List<TaxLayer> taxLayers = List.of(
+            new TaxLayer(50_000_000, 0, 0.05),
+            new TaxLayer(250_000_000, 50_000_000, 0.10),
+            new TaxLayer(500_000_000, 250_000_000, 0.15)
+    );
 
     public IndonesiaTax(List<IncomeComponent> incomeComponent, boolean isMarried, int children) {
         super(incomeComponent, isMarried, children);
     }
 
     @Override
-    public int calculateTax() {
-        int taxableIncome = getTaxableIncome();
-        int countTax = 0;
-
-        if (taxableIncome <= 0) {
-            return 0;
-        }
-
-        if (taxableIncome <= 50_000_000) {
-            countTax = calculateLayer(taxableIncome, 0.05);
-            return countTax;
-        }
-
-        countTax += calculateLayer(50_000_000, 0.05);
-        taxableIncome -= 50_000_000;
-
-        if (taxableIncome <= 250_000_000 - 50_000_000) {
-            countTax += calculateLayer(taxableIncome, 0.10);
-            return countTax;
-        }
-
-        countTax += calculateLayer(250_000_000 - 50_000_000, 0.10);
-        taxableIncome -= 250_000_000 - 50_000_000;
-
-        if (taxableIncome > 0) {
-            countTax += calculateLayer(taxableIncome, 0.15);
-        }
-
-        return countTax;
+    public int calculateCountryTax() {
+        return calculateTax(taxLayers);
     }
 
     @Override

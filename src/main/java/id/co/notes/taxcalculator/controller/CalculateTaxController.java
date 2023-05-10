@@ -21,14 +21,14 @@ public class CalculateTaxController {
               request.getkomponengaji(),
               request.getEmployee().isMarried(),
               request.getEmployee().getChilds()
-      ).calculateTax();
+      ).calculateCountryTax();
     } 
 
     return new VietnamTax(
       request.getkomponengaji(),
       request.getEmployee().isMarried(),
       request.getEmployee().getChilds()
-    ).calculateTax();
+    ).calculateCountryTax();
 
   }
 
