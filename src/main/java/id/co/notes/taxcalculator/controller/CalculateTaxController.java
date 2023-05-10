@@ -40,8 +40,8 @@ public class CalculateTaxController {
 
     monthlyTax = annualTax / 12;
 
-    String anualTaxFormated = String.format("%,d", annualTax);
-    String monthlyTaxFormated = String.format("%,d", monthlyTax);
+    String anualTaxFormated = String.format("%,d", annualTax).replace(",", ".");
+    String monthlyTaxFormated = String.format("%,d", monthlyTax).replace(",", ".");
 
     return "Pajak tahunan: "+ currency +  anualTaxFormated + "\nPajak bulanan: " + currency + monthlyTaxFormated;
 

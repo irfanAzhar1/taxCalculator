@@ -57,13 +57,15 @@ public abstract class Tax {
     }
 
     for (TaxLayer layer : taxLayers) {
-      if (taxableIncome <= layer.getMaxIncome() - layer.getMinIncome()) {
+      if (taxableIncome <= 0) {
+        break;
+      } else if (taxableIncome <= layer.getMaxIncome()) {
         countTax += calculateLayer(taxableIncome, layer.getTaxRate());
-        return countTax;
+        break;
+      } else {
+        countTax += calculateLayer(layer.getMaxIncome(), layer.getTaxRate());
+        taxableIncome -= layer.getMaxIncome();
       }
-
-      countTax += calculateLayer(layer.getMaxIncome(), layer.getTaxRate());
-      taxableIncome -= layer.getMaxIncome();
     }
 
     return countTax;
