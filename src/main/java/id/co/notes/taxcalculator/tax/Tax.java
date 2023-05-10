@@ -29,14 +29,14 @@ public abstract class Tax {
     return incomeComponents.stream()
         .filter(incomeComponent -> incomeComponent.getType() == IncomeType.earning)
         .mapToInt(IncomeComponent::getAmount)
-        .sum() * 1000;
+        .sum() * 12;
   }
 
   public int getTotalDeduction() {
     return incomeComponents.stream()
         .filter(incomeComponent -> incomeComponent.getType() == IncomeType.deduction)
         .mapToInt(IncomeComponent::getAmount)
-        .sum();
+        .sum() * 12;
   }
 
   public int calculateLayer(int taxable, double percentage) {

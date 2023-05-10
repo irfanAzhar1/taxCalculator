@@ -13,22 +13,37 @@ import id.co.notes.taxcalculator.dto.CalculateTaxRequest;
 public class CalculateTaxController {
 
   @PostMapping("/hitunggaji")
-  public int calculateTax(
+  public String calculateTax(
     @RequestBody CalculateTaxRequest request
   ) {
+    int anualTax;
+    int monthlyTax;
+    String currency;
+
     if (request.getEmployee().getCountry().equals("indonesia")) {
-      return new IndonesiaTax(
+      currency = "IDR ";
+      anualTax = new IndonesiaTax(
               request.getkomponengaji(),
               request.getEmployee().isMarried(),
               request.getEmployee().getChilds()
       ).calculateCountryTax();
-    } 
+    } else if (request.getEmployee().getCountry().equals("vietnam")) {
+      currency = "VND ";
+      anualTax = new VietnamTax(
+              request.getkomponengaji(),
+              request.getEmployee().isMarried(),
+              request.getEmployee().getChilds()
+      ).calculateCountryTax();
+    } else {
+      throw new RuntimeException("Country not supported");
+    }
 
-    return new VietnamTax(
-      request.getkomponengaji(),
-      request.getEmployee().isMarried(),
-      request.getEmployee().getChilds()
-    ).calculateCountryTax();
+    monthlyTax = anualTax / 12;
+
+    String anualTaxFormated = String.format("%,d", anualTax);
+    String monthlyTaxFormated = String.format("%,d", monthlyTax);
+
+    return "Pajak tahunan: "+ currency +  anualTaxFormated + "\nPajak bulanan: " + currency + monthlyTaxFormated;
 
   }
 
