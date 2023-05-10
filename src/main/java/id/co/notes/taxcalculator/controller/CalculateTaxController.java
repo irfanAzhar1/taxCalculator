@@ -16,31 +16,31 @@ public class CalculateTaxController {
   public String calculateTax(
     @RequestBody CalculateTaxRequest request
   ) {
-    int anualTax;
+    int annualTax;
     int monthlyTax;
     String currency;
 
     if (request.getEmployee().getCountry().equals("indonesia")) {
       currency = "IDR ";
-      anualTax = new IndonesiaTax(
+      annualTax = new IndonesiaTax(
               request.getkomponengaji(),
               request.getEmployee().isMarried(),
               request.getEmployee().getChilds()
       ).calculateCountryTax();
     } else if (request.getEmployee().getCountry().equals("vietnam")) {
       currency = "VND ";
-      anualTax = new VietnamTax(
+      annualTax = new VietnamTax(
               request.getkomponengaji(),
               request.getEmployee().isMarried(),
               request.getEmployee().getChilds()
       ).calculateCountryTax();
     } else {
-      throw new RuntimeException("Country not supported");
+      return "Negara tidak didukung";
     }
 
-    monthlyTax = anualTax / 12;
+    monthlyTax = annualTax / 12;
 
-    String anualTaxFormated = String.format("%,d", anualTax);
+    String anualTaxFormated = String.format("%,d", annualTax);
     String monthlyTaxFormated = String.format("%,d", monthlyTax);
 
     return "Pajak tahunan: "+ currency +  anualTaxFormated + "\nPajak bulanan: " + currency + monthlyTaxFormated;
